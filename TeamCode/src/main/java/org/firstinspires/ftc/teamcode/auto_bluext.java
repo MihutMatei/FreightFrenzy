@@ -25,8 +25,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name = "AUTONOMOUSGOOD_redint")
-public class BallOrCube2 extends LinearOpMode {
+@Autonomous(name = "AUTONOMOUS_blueint")
+public class auto_bluext extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
     private DcMotorEx cremaliera;
@@ -73,7 +73,7 @@ public class BallOrCube2 extends LinearOpMode {
 
         //----------------------------------------------------------------------------------------------
 
-        //traiectorii redside intern
+        //traiectorii blueside extern
         Pose2d startPose= new Pose2d(0,-47.24,0);
         drive.setPoseEstimate(startPose);
         Trajectory f1 = drive.trajectoryBuilder(startPose)

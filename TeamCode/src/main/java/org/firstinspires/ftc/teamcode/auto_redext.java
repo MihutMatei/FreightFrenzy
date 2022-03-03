@@ -25,8 +25,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name = "AUTONOMOUSGOOD_bluext")
-public class BallOrCube3 extends LinearOpMode {
+@Autonomous(name = "AUTONOMOUS_redext")
+public class auto_redext extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
     private DcMotorEx cremaliera;
@@ -53,8 +53,8 @@ public class BallOrCube3 extends LinearOpMode {
         intake =hardwareMap.get(DcMotorEx.class,"intake");
         carusel=hardwareMap.get(DcMotor.class, "carusel");
         //ruleta =hardwareMap.get(CRServo.class,"ruleta");
-       // ruleta_x =hardwareMap.get(CRServo.class,"ruleta_x");
-     //   ruleta_z =hardwareMap.get(CRServo.class,"ruleta_z");
+        //ruleta_x =hardwareMap.get(CRServo.class,"ruleta_x");
+        //ruleta_z =hardwareMap.get(CRServo.class,"ruleta_z");
 
 
         carusel.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -73,8 +73,8 @@ public class BallOrCube3 extends LinearOpMode {
 
         //----------------------------------------------------------------------------------------------
 
-        //traiectorii blueside extern
-        Pose2d startPose= new Pose2d(0,-47.24,0);
+        //traiectorii redside extern
+        Pose2d startPose= new Pose2d(0,0,0);
         drive.setPoseEstimate(startPose);
         Trajectory f1 = drive.trajectoryBuilder(startPose)
 
@@ -145,8 +145,6 @@ public class BallOrCube3 extends LinearOpMode {
             cremaliera.setVelocity(3000);
         })
                 .build();
-
-
 
         //----------------------------------------------------------------------------------------------
 
@@ -414,7 +412,7 @@ public class BallOrCube3 extends LinearOpMode {
              else type=TYPE.NO;*/
             if(average>120 && average2>120 && average3>120)
             {
-                type= TYPE.NO;
+                type=TYPE.NO;
                 zona=0;
             }
             else if(average < average2 && average < average3)
