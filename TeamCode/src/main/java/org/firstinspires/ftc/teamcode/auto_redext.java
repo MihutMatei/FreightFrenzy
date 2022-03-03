@@ -38,7 +38,7 @@ public class auto_redext extends LinearOpMode {
     private CRServo ruleta_x;
     private CRServo ruleta_z;
     static int zona=0;
-
+    //unfinished
 
     @Override
     public void runOpMode() {
