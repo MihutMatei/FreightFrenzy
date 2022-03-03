@@ -52,7 +52,6 @@ public class Test_drive extends LinearOpMode {
 //    private CRServo ruleta_x;
 //    private CRServo ruleta_z;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
 

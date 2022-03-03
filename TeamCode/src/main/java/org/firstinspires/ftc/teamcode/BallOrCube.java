@@ -70,7 +70,10 @@ public class BallOrCube extends LinearOpMode {
         ElapsedTime runtime3 = new ElapsedTime(0);
         ElapsedTime runtime4 = new ElapsedTime(0);
 
-        // TODO: sa inmultim valoriile coordonatelor din traiectorii cu coef "static double coef = 1.394230769230769;" e raport dintre roboti la sasiu
+
+        //----------------------------------------------------------------------------------------------
+
+        //traiectorii redside extern
         Pose2d startPose= new Pose2d(0,0,0);
         drive.setPoseEstimate(startPose);
         Trajectory f1 = drive.trajectoryBuilder(startPose)
@@ -101,7 +104,6 @@ public class BallOrCube extends LinearOpMode {
 
                 })
                 .build();
-
 
         Trajectory streiff = drive.trajectoryBuilder(f2.end())
                 .strafeRight(1)
@@ -145,6 +147,30 @@ public class BallOrCube extends LinearOpMode {
                 .build();
 
 
+        //----------------------------------------------------------------------------------------------
+
+        //traiectorii redside intern
+
+
+
+
+        //----------------------------------------------------------------------------------------------
+
+        //traiectorii blueside extrn
+
+
+
+
+
+        //----------------------------------------------------------------------------------------------
+
+        //traiectorii blueside intern
+
+
+
+
+
+        
         //----------------------------------------------------------------------------------------------
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
