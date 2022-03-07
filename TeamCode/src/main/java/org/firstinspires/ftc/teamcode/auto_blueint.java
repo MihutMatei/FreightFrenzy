@@ -38,7 +38,7 @@ public class auto_blueint extends LinearOpMode {
     private CRServo ruleta;
     private CRServo ruleta_x;
     private CRServo ruleta_z;
-    static int zona=0;
+    
 
 
     @Override
