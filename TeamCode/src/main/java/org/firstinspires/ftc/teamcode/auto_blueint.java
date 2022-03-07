@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -30,6 +30,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class auto_blueint extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
+    DetectionPipeline detectionPipeline;
     private DcMotorEx cremaliera;
     private DcMotorEx cascade;
     private Servo intake_servo;
@@ -64,6 +65,8 @@ public class auto_blueint extends LinearOpMode {
 
 
         pipeline = new SamplePipeline();
+        detectionPipeline = new DetectionPipeline();
+
         webcam.setPipeline(pipeline);
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ElapsedTime runtime1 = new ElapsedTime(0);
@@ -185,7 +188,7 @@ public class auto_blueint extends LinearOpMode {
             }
         });
 
-
+        webcam.setPipeline(detectionPipeline);
         while (true) {
             telemetry.addData("Type", pipeline.getType());
             telemetry.addData("Zona", pipeline.getAverage());
@@ -196,18 +199,29 @@ public class auto_blueint extends LinearOpMode {
 
             telemetry.update();
             sleep(0);
+
+
             if(isStopRequested())break;
             if(opModeIsActive())
                 break;
 
+
+
+
+            for(int i = 0; i < 3;i++) {
+                String s = "Zone " + (i + 1);
+                telemetry.addData(s, detectionPipeline.isZoneValid(i));
+            }
+            telemetry.update();
+            if (isStopRequested())break;
+
         }
         int zone = pipeline.getAverage();
-
+        webcam.setPipeline(detectionPipeline);
 
         while (opModeIsActive())
-        {  // ruleta.setPower(0);
-//            ruleta_x.setPower(0);
-//            ruleta_z.setPower(0);
+            {
+               
             telemetry.update();
             drive.followTrajectory(f1);
             sleep(500);
@@ -245,8 +259,7 @@ public class auto_blueint extends LinearOpMode {
 
             }
             if(zone==2)
-            {  // intake.setDirection(DcMotorSimple.Direction.REVERSE);
-                //intake.setPower(0.4);
+            {
                 cremaliera.setTargetPosition(-2300);
                 cremaliera.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -275,8 +288,7 @@ public class auto_blueint extends LinearOpMode {
 
             }
             if(zone==3)
-            {      // intake.setDirection(DcMotorSimple.Direction.REVERSE);
-                   // intake.setPower(0.4);
+            {
                     cremaliera.setTargetPosition(-2950);
                     cremaliera.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -349,11 +361,9 @@ public class auto_blueint extends LinearOpMode {
             drive.followTrajectory(ionutz2);
             drive.followTrajectory(inapoi2);
 
+
+
             break;
-
-
-
-
 
         }
     }

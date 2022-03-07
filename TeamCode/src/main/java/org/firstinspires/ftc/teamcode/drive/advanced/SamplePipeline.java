@@ -74,7 +74,6 @@ public class SamplePipeline extends OpenCvPipeline {
         Point bottomRight1 = new Point(input.cols()*(7.5f/12f), input.rows()*(8f/12f));
         Point topLeft2 = new Point(input.cols()*(8.5f/12f), input.rows()*(2f/12f));
         Point bottomRight2 = new Point(input.cols()*(11.5f/12f), input.rows()*(8f/12f));
-
         average = (int) Core.mean(region1_Cb).val[0];
         average2 = (int) Core.mean(region2_Cb).val[0];
         average3 = (int) Core.mean(region3_Cb).val[0];
