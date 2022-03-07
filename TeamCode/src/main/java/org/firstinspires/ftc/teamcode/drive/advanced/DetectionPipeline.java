@@ -49,7 +49,25 @@ public class DetectionPipeline extends OpenCvPipeline {
         inputToCb(input);
         int c = 0;
 
+        for(int i = 0; i < cols;i+= cols / 3)
+        {
+            for(int j = 0; j < rows; j += rows / 3)
+            {
+                Point p1 = new Point(i,j);
+                Point p2 = new Point(i + cols / 3 - 1, j + rows / 3  - 1);
 
+                Imgproc.rectangle(input, p1, p2, BLUE, 2);
+                allMats[c] = Cb.submat(new Rect(p1,p2));
+                topPoints[c] = p1;
+                botPoints[c] = p2;
+
+                if(Core.mean(allMats[c]).val[0] < 120)
+                    validZones[c] = true;
+                else
+                    validZones[c] = false;
+            }
+            c++;
+        }
         /*Point topLeft = new Point(input.cols()*(0.5f/12f), input.rows()*(2f/12f));
         Point bottomRight = new Point(input.cols()*(3.5f/12f), input.rows()*(8f/12f));
         Point topLeft1 = new Point(input.cols()*(4.5f/12f), input.rows()*(2f/12f));
