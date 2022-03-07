@@ -38,7 +38,7 @@ public class auto_blueint extends LinearOpMode {
     private CRServo ruleta;
     private CRServo ruleta_x;
     private CRServo ruleta_z;
-    
+
 
 
     @Override
@@ -108,7 +108,7 @@ public class auto_blueint extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(24.5, -21, Math.toRadians(-7)))
                 .addTemporalMarker(0.1,()->
                 {
-                    cremaliera.setTargetPosition(-2900);
+                    cremaliera.setTargetPosition(-2950);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cremaliera.setVelocity(3000);
 
@@ -142,7 +142,7 @@ public class auto_blueint extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(25.5, -20, Math.toRadians(-7)))
                 .addTemporalMarker(0.1,()->
                 {
-                    cremaliera.setTargetPosition(-2900);
+                    cremaliera.setTargetPosition(-2950);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cremaliera.setVelocity(3000);
 
@@ -254,7 +254,7 @@ public class auto_blueint extends LinearOpMode {
                 while(cremaliera.isBusy()){
 
                 }
-                sleep(500);
+                sleep(600);
                 cascade.setTargetPosition(-600);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -264,7 +264,7 @@ public class auto_blueint extends LinearOpMode {
 
                 }
 
-                sleep(500);
+                sleep(600);
                 intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 intake.setPower(0.35);
                 sleep(600);
@@ -277,7 +277,7 @@ public class auto_blueint extends LinearOpMode {
             if(zone==3)
             {      // intake.setDirection(DcMotorSimple.Direction.REVERSE);
                    // intake.setPower(0.4);
-                    cremaliera.setTargetPosition(-2900);
+                    cremaliera.setTargetPosition(-2950);
                     cremaliera.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cremaliera.setVelocity(3000);
@@ -304,15 +304,15 @@ public class auto_blueint extends LinearOpMode {
             }
 
 
-            sleep(300);
+            sleep(400);
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
             intake.setPower(0);
             drive.followTrajectory(warehouse);
-            sleep(200);
+            sleep(300);
             drive.followTrajectory(f2);
             sleep(300);
             drive.followTrajectory(ia_bila_cub);
-            sleep(300);
+            sleep(400);
             drive.followTrajectory(revers_card);
             cascade.setTargetPosition(-600);
             cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -331,7 +331,7 @@ public class auto_blueint extends LinearOpMode {
             //---------------------------------------------------------------------
             sleep(300);
             drive.followTrajectory(ia_bila_cub2);
-            sleep(300);
+            sleep(400);
             drive.followTrajectory(revers_card2);
             cascade.setTargetPosition(-600);
             cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
