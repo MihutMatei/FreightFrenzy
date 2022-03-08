@@ -14,7 +14,7 @@ public class DetectionPipeline extends OpenCvPipeline {
     private static final int THRESHOLD = 120;
 
     Mat YCrCb = new Mat();
-    Mat Cb = new Mat();\
+    Mat Cb = new Mat();
     private static int cols,rows;
     private static int numberOfElements = 0;
 
@@ -36,53 +36,47 @@ public class DetectionPipeline extends OpenCvPipeline {
         
         cols = input.cols();
         rows = input.rows();
-        
-        for(int i = 0; i < cols;i+= cols / 3)
-        {
-            for(int j = 0; j < rows; j += rows / 3)
-            {
-                int topLeftX = i;
-                int topLeftY = j;
-                
-                int botRightX = i + cols / 3 - 1;
-                int botRightY = j + rows / 3 - 1;
-                
-                if(botRightX >= cols || botRightY >= rows) continue;
-                
-                Point p1 = new Point(i,j);
-                             
-                Point p2 = new Point(botRightX, botRightY);
-                
-                Point center = new Point((topLeftX + botRightX) / 2 , (topLeftY + botRightY) / 2);
 
-                topPoints[numberOfElements] = p1;
-                
-                botPoints[numberOfElements] = p2;
-                
-                centerPoints[numberOfElements] = center;
-                
-                numberOfElements++;
-            }
-
-        }
+        for(int i = 0; i < 64;i++)
+            validZones[i] = false;
     }
     
     @Override
     public Mat processFrame(Mat input) 
     {
         inputToCb(input);
-
-        for(int i = 0; i < numberOfElements;i++)
+        numberOfElements = 0;
+        for(int i = 0; i < cols;i+= cols / 3)
         {
-            allMats[i] = Cb.submat(new Rect(topPoints[i],botPoints[i]));
+            for(int j = 0; j < rows; j += rows / 3)
+            {
+                int topLeftX = i;
+                int topLeftY = j;
 
-            String zoneName = "Zone " + i + 1;
-            
-            Imgproc.putText(input, zoneName, centerPoints[i] , Imgproc.FONT_ITALIC , 1, BLUE,1);
-                
-            Imgproc.rectangle(input, topPoints[i], botPoints[i], BLUE, 2);
+                int botRightX = i + cols / 3 - 1;
+                int botRightY = j + rows / 3 - 1;
 
-            validZones[i] = Core.mean(allMats[i]).val[0] < THRESHOLD;
+                if(botRightX >= cols || botRightY >= rows) continue;
+
+                Point p1 = new Point(i,j);
+
+                Point p2 = new Point(botRightX, botRightY);
+
+                Point center = new Point((topLeftX + botRightX) / 2 - 25, (topLeftY + botRightY) / 2);
+
+                allMats[numberOfElements] = Cb.submat(new Rect(p1,p2));
+
+                String zoneName = "Zone " + (numberOfElements + 1);
+
+                Imgproc.putText(input, zoneName, center , Imgproc.FONT_ITALIC , 1, BLUE,1);
+
+                Imgproc.rectangle(input, p1, p2, BLUE, 2);
+
+                validZones[numberOfElements] = Core.mean(allMats[numberOfElements]).val[0] < THRESHOLD;
+
+                numberOfElements++;
+            }
+
         }
 
         return input;
