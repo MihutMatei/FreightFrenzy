@@ -1,8 +1,5 @@
-package org.firstinspires.ftc.teamcode;
-import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+package org.firstinspires.ftc.teamcode.drive;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,24 +7,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.SamplePipeline;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name = "AUTONOMOUS_blueint")
-public class auto_blueint extends LinearOpMode {
+@Autonomous(name = "AutonomusGood")
+public class AutonomusGood extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
     DetectionPipeline detectionPipeline;

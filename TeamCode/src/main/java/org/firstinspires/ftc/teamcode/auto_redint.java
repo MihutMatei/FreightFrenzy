@@ -74,27 +74,13 @@ public class auto_redint extends LinearOpMode {
         //----------------------------------------------------------------------------------------------
 
         //traiectorii redside intern
-        Pose2d startPose= new Pose2d(0,-47.24,0);
+        Pose2d startPose= new Pose2d(0,0,0);
         drive.setPoseEstimate(startPose);
         Trajectory f1 = drive.trajectoryBuilder(startPose)
-
-                .splineTo(new Vector2d(22,-27),0)
-
+                .lineToSplineHeading(new Pose2d(24,18,Math.toRadians(9)))
                 .build();
-
-        Trajectory duck =drive.trajectoryBuilder(f1.end())
-                //.splineTo(new Vector2d(5,25),90)
-                .lineToSplineHeading(new Pose2d(7.7,25,Math.toRadians(90)))
-                .build();
-        Trajectory warehouse = drive.trajectoryBuilder(duck.end())
-                .lineToSplineHeading(new Pose2d(-0.5,0,Math.toRadians(270)))
-
-                .build();
-        Trajectory streif=drive.trajectoryBuilder(warehouse.end())
-                .strafeRight(2)
-                .build();
-        Trajectory f2 =drive.trajectoryBuilder(streif.end())
-                .forward(85) // daca nu 90
+        Trajectory warehouse=drive.trajectoryBuilder(f1.end())
+                .lineToSplineHeading(new Pose2d(-0.5,0,Math.toRadians(-90)))
                 .addTemporalMarker(0.1,()->
                 {   cremaliera.setTargetPosition(-20);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -104,50 +90,72 @@ public class auto_redint extends LinearOpMode {
 
                 })
                 .build();
-
-        Trajectory streiff = drive.trajectoryBuilder(f2.end())
-                .strafeRight(1)
+        Trajectory f2=drive.trajectoryBuilder(warehouse.end())
+                .forward(40)
                 .build();
-        Trajectory ia_bila_cub = drive.trajectoryBuilder(streiff.end())
+        Trajectory ia_bila_cub = drive.trajectoryBuilder(f2.end())
                 .back(40)
                 .build();
-
         Trajectory revers_card = drive.trajectoryBuilder(ia_bila_cub.end())
-                .lineToLinearHeading(new Pose2d(24.5, -30, Math.toRadians(12)))
+                .lineToLinearHeading(new Pose2d(24.5, 18, Math.toRadians(7)))
                 .addTemporalMarker(0.1,()->
                 {
-                    cremaliera.setTargetPosition(-2900);
+                    cremaliera.setTargetPosition(-2950);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cremaliera.setVelocity(3000);
 
 
                 })
                 .build();
-
         Trajectory ionutz = drive.trajectoryBuilder(revers_card.end())
-                .lineToLinearHeading(new Pose2d(0.4, -40, Math.toRadians(270)))
-                .build();
-        Trajectory streif2= drive.trajectoryBuilder(ionutz.end())
-                .strafeRight(5.25)
-                .build();
-
-        Trajectory inapoi = drive.trajectoryBuilder(streif2.end())
-                .forward(50)
+                .lineToLinearHeading(new Pose2d(-0.5, 0, Math.toRadians(-90)))
                 .addTemporalMarker(0.1,()->
-        {   intake.setDirection(DcMotorSimple.Direction.REVERSE);
-            intake.setPower(0.6);
-            cascade.setTargetPosition(-20);
-           /* cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
-            cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            cascade.setPower(0.4);
-            cremaliera.setTargetPosition(-20);
-            cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            cremaliera.setVelocity(3000);
-        })
+                {   intake.setDirection(DcMotorSimple.Direction.REVERSE);
+                    intake.setPower(0.7);
+                    cascade.setTargetPosition(-20);
+                    cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cascade.setPower(0.4);
+                    cremaliera.setTargetPosition(-20);
+                    cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cremaliera.setVelocity(3000);
+                })
+                .build();
+        //----------------------------------------------------------------------------------------------
+
+        Trajectory inapoi=drive.trajectoryBuilder(ionutz.end())
+                .forward(40)
                 .build();
 
+        Trajectory ia_bila_cub2 = drive.trajectoryBuilder(f2.end())
+                .back(40)
+                .build();
+        Trajectory revers_card2 = drive.trajectoryBuilder(ia_bila_cub.end())
+                .lineToLinearHeading(new Pose2d(24.5, 18, Math.toRadians(7)))
+                .addTemporalMarker(0.1,()->
+                {
+                    cremaliera.setTargetPosition(-2950);
+                    cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cremaliera.setVelocity(3000);
 
 
+                })
+                .build();
+        Trajectory ionutz2 = drive.trajectoryBuilder(revers_card.end())
+                .lineToLinearHeading(new Pose2d(-0.5, 7, Math.toRadians(-90)))
+                .addTemporalMarker(0.1,()->
+                {   intake.setDirection(DcMotorSimple.Direction.REVERSE);
+                    intake.setPower(0.7);
+                    cascade.setTargetPosition(-20);
+                    cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cascade.setPower(0.4);
+                    cremaliera.setTargetPosition(-20);
+                    cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cremaliera.setVelocity(3000);
+                })
+                .build();
+        Trajectory inapoi2=drive.trajectoryBuilder(ionutz.end())
+                .forward(40)
+                .build();
         //----------------------------------------------------------------------------------------------
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -190,7 +198,7 @@ public class auto_redint extends LinearOpMode {
 //            ruleta_z.setPower(0);
             telemetry.update();
             drive.followTrajectory(f1);
-            sleep(500);
+            sleep(300);
             telemetry.clear();
             telemetry.update();
             telemetry.addData("Zona", zone);
@@ -214,10 +222,10 @@ public class auto_redint extends LinearOpMode {
                 {
 
                 }
-                sleep(500);
+                sleep(300);
                 intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 intake.setPower(0.6);
-                sleep(1000);
+                sleep(600);
                 cascade.setTargetPosition(0);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 cascade.setPower(0.4);
@@ -234,7 +242,7 @@ public class auto_redint extends LinearOpMode {
                 while(cremaliera.isBusy()){
 
                 }
-                sleep(500);
+                sleep(300);
                 cascade.setTargetPosition(-600);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -244,10 +252,10 @@ public class auto_redint extends LinearOpMode {
 
                 }
 
-                sleep(500);
+                sleep(300);
                 intake.setDirection(DcMotorSimple.Direction.FORWARD);
                 intake.setPower(0.35);
-                sleep(1000);
+                sleep(600);
               cascade.setTargetPosition(0);
               cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
               cascade.setPower(0.4);
@@ -264,43 +272,55 @@ public class auto_redint extends LinearOpMode {
                     while(cremaliera.isBusy()){
 
                     }
-                    sleep(500);
+                    sleep(300);
                     cascade.setTargetPosition(-700);
                     cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cascade.setPower(0.4);
-                    sleep(500);
+                    sleep(300);
                     while(cascade.isBusy())
                     {
 
                     }
-                    sleep(500);
+                    sleep(300);
                     intake.setDirection(DcMotorSimple.Direction.FORWARD);
                     intake.setPower(0.7);
-                    sleep(1000);
+                    sleep(600);
                     cascade.setTargetPosition(0);
                     cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     cascade.setPower(0.4);
             }
 
 
-            sleep(500);
+            sleep(400);
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
             intake.setPower(0);
-            drive.followTrajectory(duck);
-            cascade.setVelocity(0);
-            runtime2.reset();
-            while(runtime2.time()<3.0)
-            carusel.setPower(-0.4);
-            drive.followTrajectory(warehouse);sleep(500);
-            drive.followTrajectory(streif);
-            carusel.setPower(0);
+            drive.followTrajectory(warehouse);
+            sleep(300);
             drive.followTrajectory(f2);
-            sleep(500);
-            drive.followTrajectory(streiff);
+            sleep(300);
             drive.followTrajectory(ia_bila_cub);
-            sleep(500);
+            sleep(400);
             drive.followTrajectory(revers_card);
+            cascade.setTargetPosition(-600);
+            cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            cascade.setPower(0.4);
+            while(cascade.isBusy())
+            {
+
+            }
+            sleep(400);
+            intake.setDirection(DcMotorSimple.Direction.FORWARD);
+            intake.setPower(0.6);
+            sleep(400);
+            drive.followTrajectory(ionutz);
+            drive.followTrajectory(inapoi);
+            //---------------------------------------------------------------------
+            sleep(300);
+            drive.followTrajectory(ia_bila_cub2);
+            sleep(400);
+            drive.followTrajectory(revers_card2);
             cascade.setTargetPosition(-600);
             cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -310,15 +330,12 @@ public class auto_redint extends LinearOpMode {
             {
 
             }
-            sleep(1000);
+            sleep(400);
             intake.setDirection(DcMotorSimple.Direction.FORWARD);
             intake.setPower(0.6);
-            sleep(1000);
-            drive.followTrajectory(ionutz);
-            drive.followTrajectory(streif2);
-            drive.followTrajectory(inapoi);
-          //  sleep(1000);
-
+            sleep(400);
+            drive.followTrajectory(ionutz2);
+            drive.followTrajectory(inapoi2);
             break;
         }
 
