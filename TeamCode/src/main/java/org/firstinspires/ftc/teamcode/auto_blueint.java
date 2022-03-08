@@ -204,6 +204,13 @@ public class auto_blueint extends LinearOpMode {
                 String s = "Zone " + (i + 1);
                 telemetry.addData(s, detectionPipeline.isZoneValid(i));
             }
+
+            int bestZone = detectionPipeline.getBestZone(DetectionPipeline.ZoneType.E_RIGHT); // dam ca argument zona preferata pe langa cea din centru
+            // adica daca suntem in stanga preferam sa luam din dreapta daca nu gasim nimic in centru ca sa nu ne bagam in perete si invers
+
+            telemetry.addData("BestZone", bestZone);
+            telemetry.addData("ZoneType", detectionPipeline.getZoneType(bestZone));
+
             telemetry.update();
             if(isStopRequested())break;
             if(opModeIsActive())
