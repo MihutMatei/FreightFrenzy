@@ -13,19 +13,20 @@ public class DetectionPipeline extends OpenCvPipeline {
 
     private static final int THRESHOLD = 120;
 
-    Mat YCrCb = new Mat();
-    Mat Cb = new Mat();
+    Mat luminosityMat = new Mat();
+
+    private static final int gridSize = 3;
     private static int cols,rows;
     private static int numberOfElements = 0;
 
     private void inputToCb(Mat input) {
-        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-        Core.extractChannel(YCrCb, Cb, 2);
+        Mat extractionMat = new Mat();
+
+        Imgproc.cvtColor(input, extractionMat, Imgproc.COLOR_RGB2YCrCb); // convert rgb to chroma and luminosity
+
+        Core.extractChannel(extractionMat, luminosityMat, 2);
     }
 
-    private Point[] topPoints = new Point[20];
-    private Point[] botPoints = new Point[20];
-    private Point[] centerPoints = new Point[20];
     private Mat[]   allMats = new Mat[20];
     private boolean[] validZones = new boolean[64];
     
@@ -46,15 +47,15 @@ public class DetectionPipeline extends OpenCvPipeline {
     {
         inputToCb(input);
         numberOfElements = 0;
-        for(int i = 0; i < cols;i+= cols / 3)
+        for(int i = 0; i < cols;i+= cols / gridSize)
         {
-            for(int j = 0; j < rows; j += rows / 3)
+            for(int j = 0; j < rows; j += rows / gridSize)
             {
                 int topLeftX = i;
                 int topLeftY = j;
 
-                int botRightX = i + cols / 3 - 1;
-                int botRightY = j + rows / 3 - 1;
+                int botRightX = i + cols / gridSize - 1;
+                int botRightY = j + rows / gridSize - 1;
 
                 if(botRightX >= cols || botRightY >= rows) continue;
 
@@ -64,7 +65,7 @@ public class DetectionPipeline extends OpenCvPipeline {
 
                 Point center = new Point((topLeftX + botRightX) / 2 - 25, (topLeftY + botRightY) / 2);
 
-                allMats[numberOfElements] = Cb.submat(new Rect(p1,p2));
+                allMats[numberOfElements] = luminosityMat.submat(new Rect(p1,p2));
 
                 String zoneName = "Zone " + (numberOfElements + 1);
 
@@ -81,7 +82,53 @@ public class DetectionPipeline extends OpenCvPipeline {
 
         return input;
     }
-  
-    public boolean[] getValidZones() { return validZones; }
-    public boolean isZoneValid(int zone) { return validZones[zone];};
+
+   // public boolean[] getValidZones() { return validZones; }
+
+    public ZoneType getZoneType(int zone) // zone parameter IS index 1 based
+    {
+        if(zone <= gridSize)
+            return ZoneType.E_LEFT;
+        else if(zone <= gridSize * 2)
+            return ZoneType.E_CENTER;
+        else
+            return ZoneType.E_RIGHT;
+    }
+
+    public int getBestZone(ZoneType preferredZone) { // index 1 based zones
+        int bestZone = 0;
+        boolean foundCenterZone = false;
+        boolean foundPrefferedZone = false;
+
+        for(int i = 0; i < allMats.length;i++) {
+            if(!validZones[i]) continue;
+
+            ZoneType zoneType = getZoneType(i + 1);
+
+            if(zoneType == ZoneType.E_CENTER)
+            {
+                foundCenterZone = true;
+                bestZone = Math.max(bestZone , i + 1);
+            }
+            else if(!foundCenterZone && zoneType == preferredZone)
+            {
+                bestZone = Math.max(bestZone, i + 1);
+                foundPrefferedZone = true;
+            }
+            else if(!foundCenterZone && !foundPrefferedZone)
+            {
+                bestZone = Math.max(bestZone, i + 1);
+            }
+        }
+
+        return bestZone;
+    }
+
+    public boolean isZoneValid(int zone) { return validZones[zone]; };
+
+    public enum ZoneType
+    {
+        E_NONE,E_LEFT,E_RIGHT,E_CENTER
+    }
+
 }
