@@ -83,17 +83,6 @@ public class auto_redext extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(8,23,Math.toRadians(180)))
                 .build();
 
-        Trajectory shipp=drive.trajectoryBuilder(mypose)
-                .lineToSplineHeading(new Pose2d(23,-25,Math.toRadians(350)))
-                .addTemporalMarker(0.1,()->
-                {
-                    cascade.setTargetPosition(-700);
-                    cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    cascade.setPower(0.5);
-                    outake.setPosition(0.5);
-                })
-                .build();
         //----------------------------------------------------------------------------------------------
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -136,6 +125,18 @@ public class auto_redext extends LinearOpMode {
 
         while (opModeIsActive())
         {
+            Trajectory shipp=drive.trajectoryBuilder(mypose)
+                .lineToSplineHeading(new Pose2d(23,-25,Math.toRadians(350)))
+                .addTemporalMarker(0.1,()->
+                {
+                    cascade.setTargetPosition(-700);
+                    cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cascade.setPower(0.5);
+                    outake.setPosition(0.5);
+                })
+                .build();
+            
             telemetry.update();
             drive.followTrajectory(f1);
             sleep(500);
