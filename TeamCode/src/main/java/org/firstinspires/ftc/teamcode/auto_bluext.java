@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -25,11 +26,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.drive.advanced.SamplePipeline;
+import org.firstinspires.ftc.teamcode.drive.advanced.DetectionPipeline;
 
 @Autonomous(name = "AUTONOMOUS_bluext")
 public class auto_bluext extends LinearOpMode {
     OpenCvCamera webcam;
     SamplePipeline pipeline;
+    DetectionPipeline detectionPipeline;
     private DcMotorEx cremaliera;
     private DcMotorEx cascade;
     private Servo intake_servo;
@@ -58,6 +61,7 @@ public class auto_bluext extends LinearOpMode {
 
 
         pipeline = new SamplePipeline();
+        detectionPipeline = new DetectionPipeline();
         webcam.setPipeline(pipeline);
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         ElapsedTime runtime1 = new ElapsedTime(0);
@@ -80,10 +84,19 @@ public class auto_bluext extends LinearOpMode {
 
 
         Trajectory duck =drive.trajectoryBuilder(f1.end())
-                .lineToSplineHeading(new Pose2d(0.5,-31,Math.toRadians(135)))
+                .lineToSplineHeading(new Pose2d(0,-30,Math.toRadians(140)))
+                .addTemporalMarker(0.1,()->{
+                    cremaliera.setTargetPosition(-20);
+
+                    cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    cremaliera.setVelocity(3000);
+                })
                 .build();
         Trajectory parked =drive.trajectoryBuilder(duck.end())
                 .lineToSplineHeading(new Pose2d(20,-32,Math.toRadians(90)))
+                .build();
+        Trajectory pickupDuck = drive.trajectoryBuilder(duck.end())
+                .lineToSplineHeading(new Pose2d(20,-30,Math.toRadians(180)))
                 .build();
 
         //----------------------------------------------------------------------------------------------
@@ -121,8 +134,9 @@ public class auto_bluext extends LinearOpMode {
         }
         int zone = pipeline.getAverage();
 
+        webcam.setPipeline(detectionPipeline);
 
-        if (opModeIsActive())
+        while (opModeIsActive())
         {  // ruleta.setPower(0);
 //            ruleta_x.setPower(0);
 //            ruleta_z.setPower(0);
@@ -147,7 +161,7 @@ public class auto_bluext extends LinearOpMode {
                 cascade.setTargetPosition(-200);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                cascade.setPower(0.4);
+                cascade.setPower(0.6);
                 while (cascade.isBusy())
                 {
 
@@ -176,7 +190,7 @@ public class auto_bluext extends LinearOpMode {
                 cascade.setTargetPosition(-600);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                cascade.setPower(0.4);
+                cascade.setPower(0.6);
                 while (cascade.isBusy())
                 {
 
@@ -188,7 +202,7 @@ public class auto_bluext extends LinearOpMode {
                 sleep(1000);
               cascade.setTargetPosition(0);
               cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-              cascade.setPower(0.4);
+              cascade.setPower(0.6);
 
 
             }
@@ -206,7 +220,7 @@ public class auto_bluext extends LinearOpMode {
                     cascade.setTargetPosition(-700);
                     cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    cascade.setPower(0.4);
+                    cascade.setPower(0.6);
                     sleep(500);
                     while(cascade.isBusy())
                     {
@@ -218,7 +232,7 @@ public class auto_bluext extends LinearOpMode {
                     sleep(1000);
                     cascade.setTargetPosition(0);
                     cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    cascade.setPower(0.4);
+                    cascade.setPower(0.6);
             }
 
 
@@ -228,15 +242,47 @@ public class auto_bluext extends LinearOpMode {
             drive.followTrajectory(duck);
             cascade.setVelocity(0);
             runtime2.reset();
-            while(runtime2.time()<3.0) {
-                if(runtime2.time()<1.5)
+            while(runtime2.time()<4.0) {
+                //if(runtime2.time()<1.5)
                 carusel.setPower(0.4);
-                else  carusel.setPower(0.7);
+               // else  carusel.setPower(0.7);
             }
+            carusel.setPower(0);
+            drive.followTrajectory(pickupDuck);
 
-            drive.followTrajectory(parked);
+            sleep(500);
+
+            int bestZone = detectionPipeline.getBestZone(DetectionPipeline.ZoneType.E_RIGHT); // dam ca argument zona preferata pe langa cea din centru
+            // adica daca suntem in stanga preferam sa luam din dreapta daca nu gasim nimic in centru ca sa nu ne bagam in perete si invers
+            DetectionPipeline.ZoneType zoneType = detectionPipeline.getZoneType(bestZone);
+            telemetry.addData("BestZone", bestZone);
+            telemetry.addData("ZoneType", zoneType);
+
+            if(bestZone==0)
+            {
+                drive.followTrajectory(parked);
+                break;
+            }
+            if(zoneType == DetectionPipeline.ZoneType.E_CENTER)
+            {
+                //forward
+            }
+            else if(zoneType == DetectionPipeline.ZoneType.E_LEFT)
+            {
+                //left
+            }
+            else
+            {
+                //right
+            }
+            //shipp
+
+            telemetry.update();
 
 
+            //drive.followTrajectory(parked);
+
+            break;
         }
     }
 }
