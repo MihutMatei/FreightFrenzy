@@ -94,6 +94,26 @@ public class DetectionPipeline extends OpenCvPipeline {
             return ZoneType.E_RIGHT;
     }
 
+    public int getDuckZone()
+    {
+        int bestZone = 0;
+        double bestAverage = 10000;
+        for(int i = 0; i < allMats.length;i++) {
+            if(!validZones[i]) continue;
+
+            ZoneType zoneType = getZoneType(i + 1);
+
+            double current_avg = Core.mean(allMats[i]).val[0];
+
+            if(current_avg < bestAverage)
+            {
+                bestAverage = current_avg;
+                bestZone = i;
+            }
+        }
+
+        return bestZone;
+    }
     public int getBestZone(ZoneType preferredZone) { // index 1 based zones
         int bestZone = 0;
         boolean foundCenterZone = false;

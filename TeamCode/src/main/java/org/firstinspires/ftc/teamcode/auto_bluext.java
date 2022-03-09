@@ -84,7 +84,7 @@ public class auto_bluext extends LinearOpMode {
 
 
         Trajectory duck =drive.trajectoryBuilder(f1.end())
-                .lineToSplineHeading(new Pose2d(0,-30,Math.toRadians(140)))
+                .lineToSplineHeading(new Pose2d(2,-30,Math.toRadians(140)))
                 .addTemporalMarker(0.1,()->{
                     cremaliera.setTargetPosition(-20);
 
@@ -98,6 +98,25 @@ public class auto_bluext extends LinearOpMode {
         Trajectory pickupDuck = drive.trajectoryBuilder(duck.end())
                 .lineToSplineHeading(new Pose2d(20,-30,Math.toRadians(180)))
                 .build();
+        Trajectory forward = drive.trajectoryBuilder(pickupDuck.end())
+                .lineToSplineHeading(new Pose2d(15,-5,Math.toRadians(225)))
+
+                .build();
+        Trajectory left = drive.trajectoryBuilder(pickupDuck.end())
+                .lineToSplineHeading(new Pose2d(15,-5,Math.toRadians(235)))
+
+                .build();
+
+        Trajectory right = drive.trajectoryBuilder(pickupDuck.end())
+                .lineToSplineHeading(new Pose2d(15,-5,Math.toRadians(215)))
+
+                .build();
+        Trajectory f2 = drive.trajectoryBuilder(forward.end())
+                .forward(19)
+
+
+                .build();
+
 
         //----------------------------------------------------------------------------------------------
 
@@ -137,9 +156,7 @@ public class auto_bluext extends LinearOpMode {
         webcam.setPipeline(detectionPipeline);
 
         while (opModeIsActive())
-        {  // ruleta.setPower(0);
-//            ruleta_x.setPower(0);
-//            ruleta_z.setPower(0);
+        {
             telemetry.update();
             drive.followTrajectory(f1);
             sleep(500);
@@ -244,7 +261,7 @@ public class auto_bluext extends LinearOpMode {
             runtime2.reset();
             while(runtime2.time()<4.0) {
                 //if(runtime2.time()<1.5)
-                carusel.setPower(0.4);
+                carusel.setPower(0.32);
                // else  carusel.setPower(0.7);
             }
             carusel.setPower(0);
@@ -252,7 +269,7 @@ public class auto_bluext extends LinearOpMode {
 
             sleep(500);
 
-            int bestZone = detectionPipeline.getBestZone(DetectionPipeline.ZoneType.E_RIGHT); // dam ca argument zona preferata pe langa cea din centru
+            int bestZone = detectionPipeline.getDuckZone(); // dam ca argument zona preferata pe langa cea din centru
             // adica daca suntem in stanga preferam sa luam din dreapta daca nu gasim nimic in centru ca sa nu ne bagam in perete si invers
             DetectionPipeline.ZoneType zoneType = detectionPipeline.getZoneType(bestZone);
             telemetry.addData("BestZone", bestZone);
@@ -265,15 +282,25 @@ public class auto_bluext extends LinearOpMode {
             }
             if(zoneType == DetectionPipeline.ZoneType.E_CENTER)
             {
-                //forward
+                drive.followTrajectory(forward);
+                sleep(2000);
+                intake.setDirection(DcMotorSimple.Direction.REVERSE);
+                intake.setPower(0.6);
+
+                telemetry.addData("BestZone", bestZone);
+                telemetry.addData("ZoneType", zoneType);
+                telemetry.update();
+
+                drive.followTrajectory(f2);
+                sleep(1500);
             }
             else if(zoneType == DetectionPipeline.ZoneType.E_LEFT)
             {
-                //left
+                drive.followTrajectory(left);
             }
             else
             {
-                //right
+                drive.followTrajectory(right);
             }
             //shipp
 

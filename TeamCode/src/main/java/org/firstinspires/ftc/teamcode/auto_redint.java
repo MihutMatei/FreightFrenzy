@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -77,10 +76,10 @@ public class auto_redint extends LinearOpMode {
         Pose2d startPose= new Pose2d(0,0,0);
         drive.setPoseEstimate(startPose);
         Trajectory f1 = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(24,18,Math.toRadians(9)))
+                .lineToSplineHeading(new Pose2d(24.5,18,Math.toRadians(12)))
                 .build();
         Trajectory warehouse=drive.trajectoryBuilder(f1.end())
-                .lineToSplineHeading(new Pose2d(-0.5,0,Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(0.2,0,Math.toRadians(-90)))
                 .addTemporalMarker(0.1,()->
                 {   cremaliera.setTargetPosition(-20);
                     cremaliera.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -130,7 +129,7 @@ public class auto_redint extends LinearOpMode {
                 .back(40)
                 .build();
         Trajectory revers_card2 = drive.trajectoryBuilder(ia_bila_cub.end())
-                .lineToLinearHeading(new Pose2d(24.5, 18, Math.toRadians(7)))
+                .lineToLinearHeading(new Pose2d(24.5, 16, Math.toRadians(7)))
                 .addTemporalMarker(0.1,()->
                 {
                     cremaliera.setTargetPosition(-2950);
@@ -217,14 +216,14 @@ public class auto_redint extends LinearOpMode {
                 cascade.setTargetPosition(-200);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                cascade.setPower(0.4);
+                cascade.setPower(1);
                 while (cascade.isBusy())
                 {
 
                 }
                 sleep(300);
                 intake.setDirection(DcMotorSimple.Direction.FORWARD);
-                intake.setPower(0.6);
+                intake.setPower(0.4);
                 sleep(600);
                 cascade.setTargetPosition(0);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -246,7 +245,7 @@ public class auto_redint extends LinearOpMode {
                 cascade.setTargetPosition(-600);
                 cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                cascade.setPower(0.4);
+                cascade.setPower(1);
                 while (cascade.isBusy())
                 {
 
@@ -276,7 +275,7 @@ public class auto_redint extends LinearOpMode {
                     cascade.setTargetPosition(-700);
                     cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    cascade.setPower(0.4);
+                    cascade.setPower(1);
                     sleep(300);
                     while(cascade.isBusy())
                     {
@@ -305,7 +304,7 @@ public class auto_redint extends LinearOpMode {
             cascade.setTargetPosition(-600);
             cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            cascade.setPower(0.4);
+            cascade.setPower(1);
             while(cascade.isBusy())
             {
 
@@ -313,7 +312,7 @@ public class auto_redint extends LinearOpMode {
             sleep(400);
             intake.setDirection(DcMotorSimple.Direction.FORWARD);
             intake.setPower(0.6);
-            sleep(400);
+            sleep(1000);
             drive.followTrajectory(ionutz);
             drive.followTrajectory(inapoi);
             //---------------------------------------------------------------------
@@ -324,7 +323,7 @@ public class auto_redint extends LinearOpMode {
             cascade.setTargetPosition(-600);
             cascade.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             cascade.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            cascade.setPower(0.4);
+            cascade.setPower(1);
             while(cascade.isBusy())
 
             {
@@ -332,8 +331,8 @@ public class auto_redint extends LinearOpMode {
             }
             sleep(400);
             intake.setDirection(DcMotorSimple.Direction.FORWARD);
-            intake.setPower(0.6);
-            sleep(400);
+            intake.setPower(0.4);
+            sleep(1000);
             drive.followTrajectory(ionutz2);
             drive.followTrajectory(inapoi2);
             break;
