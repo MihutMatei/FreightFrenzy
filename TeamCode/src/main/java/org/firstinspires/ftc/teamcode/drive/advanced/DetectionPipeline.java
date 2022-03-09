@@ -14,14 +14,13 @@ public class DetectionPipeline extends OpenCvPipeline {
     private static final int THRESHOLD = 120;
 
     Mat luminosityMat = new Mat();
+    Mat extractionMat = new Mat();
 
     private static final int gridSize = 3;
     private static int cols,rows;
     private static int numberOfElements = 0;
 
     private void inputToCb(Mat input) {
-        Mat extractionMat = new Mat();
-
         Imgproc.cvtColor(input, extractionMat, Imgproc.COLOR_RGB2YCrCb); // convert rgb to chroma and luminosity
 
         Core.extractChannel(extractionMat, luminosityMat, 2);
